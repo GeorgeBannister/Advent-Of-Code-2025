@@ -1,0 +1,22 @@
+[project]
+name = "Advent-Of-Code-2025"
+requires-python = ">=3.11"
+version = "1.0.0"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint]
+ignore = ["D", "S", "TD", "FIX", "E501", "INP", "T201", "PLR"]
+
+select = ["ALL"]
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
