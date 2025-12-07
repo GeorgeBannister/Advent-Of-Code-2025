@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from pathlib import Path
+
+test_inp = """"""
+
+true_inp = Path('inp_{{N}}').read_text()
+
+def solve_1(inp: str) -> int:
+    return 0
+
+
+def solve_2(inp: str) -> int:
+    return 0
+
+
+assert solve_1(test_inp) == None
+print(f'{solve_1(true_inp) = }')
+assert solve_2(test_inp) == None
+print(f'{solve_2(true_inp) = }')
