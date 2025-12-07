@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from pathlib import Path
-
 from dataclasses import dataclass
+from pathlib import Path
 
 test_inp = """\
 .......S.......
