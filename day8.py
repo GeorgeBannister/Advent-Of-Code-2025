@@ -60,12 +60,13 @@ def solve_1(inp: str, n_conns) -> int:
         direct_connections.add((curr_a, curr_b))
         direct_connections.add((curr_b, curr_a))
 
+        n_circuits = len(circuits)
         if curr_a_in_circuit and curr_b_in_circuit:
             found = False
-            for idx in range(len(circuits)):
+            for idx in range(n_circuits):
                 if found:
                     break
-                for idy in range(len(circuits)):
+                for idy in range(n_circuits):
                     if found:
                         break
                     if curr_a in circuits[idx] and curr_b in circuits[idy] and idx != idy:
@@ -74,12 +75,12 @@ def solve_1(inp: str, n_conns) -> int:
                         found = True
 
         elif curr_a_in_circuit:
-            for idx in range(len(circuits)):
+            for idx in range(n_circuits):
                 if curr_a in circuits[idx]:
                     circuits[idx].add(curr_b)
 
         elif curr_b_in_circuit:
-            for idx in range(len(circuits)):
+            for idx in range(n_circuits):
                 if curr_b in circuits[idx]:
                     circuits[idx].add(curr_a)
 
