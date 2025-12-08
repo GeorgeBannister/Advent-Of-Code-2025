@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from pathlib import Path
 from dataclasses import dataclass
 from functools import reduce
-from pprint import pprint
+from pathlib import Path
 
 test_inp = """162,817,812
 57,618,57
