@@ -44,22 +44,15 @@ def solve_1(inp: str, n_conns) -> int:
     circuits: list[set[Co3]] = []
 
     direct_connections: set[tuple[Co3, Co3]] = set()
+    distances = [(a, b, a.distance_to(b)) for a in junction_boxes for b in junction_boxes if a != b]
+    distances.sort(key=lambda x: x[2])
+    d_iter = iter(distances)
 
     for _ in range(n_conns):
-        curr_min = 999999999999999
-        curr_a = None
-        curr_b = None
+        curr_a, curr_b, _ = next(d_iter)
 
-        for first_box in junction_boxes:
-            for second_box in junction_boxes:
-                if (
-                    (distance := first_box.distance_to(second_box)) < curr_min
-                    and first_box != second_box
-                    and (first_box, second_box) not in direct_connections
-                ):
-                    curr_min = distance
-                    curr_a = first_box
-                    curr_b = second_box
+        while (curr_a, curr_b) in direct_connections:
+            curr_a, curr_b, _ = next(d_iter)
 
         curr_a_in_circuit = any(curr_a in x for x in circuits)
         curr_b_in_circuit = any(curr_b in x for x in circuits)
@@ -71,57 +64,47 @@ def solve_1(inp: str, n_conns) -> int:
             found = False
             for idx in range(len(circuits)):
                 if found:
-                    continue
+                    break
                 for idy in range(len(circuits)):
                     if found:
-                        continue
+                        break
                     if curr_a in circuits[idx] and curr_b in circuits[idy] and idx != idy:
                         circuits[idx] |= circuits[idy]
                         circuits[idy] = set()
-                        break
+                        found = True
 
         elif curr_a_in_circuit:
             for idx in range(len(circuits)):
                 if curr_a in circuits[idx]:
-                    circuits[idx] |= {curr_b}
+                    circuits[idx].add(curr_b)
 
         elif curr_b_in_circuit:
             for idx in range(len(circuits)):
                 if curr_b in circuits[idx]:
-                    circuits[idx] |= {curr_a}
+                    circuits[idx].add(curr_a)
 
-        if not (any(curr_a in x for x in circuits) or any(curr_b in x for x in circuits)):
+        else:
             circuits.append({curr_a, curr_b})
-            continue
     return reduce(lambda a, b: a * b, sorted([len(x) for x in circuits], reverse=True)[:3], 1)
 
 
 def solve_2(inp: str) -> int:
     junction_boxes: list[Co3] = [eval(f'Co3({line})') for line in inp.splitlines()]
     circuits: list[set[Co3]] = []
-
     direct_connections: set[tuple[Co3, Co3]] = set()
 
     def is_solved() -> bool:
         return max(len(x) for x in circuits) == len(junction_boxes)
 
-    distances = {(a, b): a.distance_to(b) for a in junction_boxes for b in junction_boxes}
+    distances = [(a, b, a.distance_to(b)) for a in junction_boxes for b in junction_boxes if a != b]
+    distances.sort(key=lambda x: x[2])
+    d_iter = iter(distances)
 
     while True:
-        curr_min = 999999999999999
-        curr_a = None
-        curr_b = None
+        curr_a, curr_b, _ = next(d_iter)
 
-        for first_box in junction_boxes:
-            for second_box in junction_boxes:
-                if (
-                    (distance := distances[(first_box, second_box)]) < curr_min
-                    and first_box != second_box
-                    and (first_box, second_box) not in direct_connections
-                ):
-                    curr_min = distance
-                    curr_a = first_box
-                    curr_b = second_box
+        while (curr_a, curr_b) in direct_connections:
+            curr_a, curr_b, _ = next(d_iter)
 
         curr_a_in_circuit = any(curr_a in x for x in circuits)
         curr_b_in_circuit = any(curr_b in x for x in circuits)
@@ -129,37 +112,37 @@ def solve_2(inp: str) -> int:
         direct_connections.add((curr_a, curr_b))
         direct_connections.add((curr_b, curr_a))
 
+        n_circuits = len(circuits)
+
         if curr_a_in_circuit and curr_b_in_circuit:
             found = False
-            for idx in range(len(circuits)):
+            for idx in range(n_circuits):
                 if found:
-                    continue
-                for idy in range(len(circuits)):
+                    break
+                for idy in range(n_circuits):
                     if found:
-                        continue
+                        break
                     if curr_a in circuits[idx] and curr_b in circuits[idy] and idx != idy:
                         circuits[idx] |= circuits[idy]
                         circuits[idy] = set()
                         if is_solved():
                             return curr_a.x * curr_b.x
-                        break
+                        found = True
 
         elif curr_a_in_circuit:
-            for idx in range(len(circuits)):
+            for idx in range(n_circuits):
                 if curr_a in circuits[idx]:
-                    circuits[idx] |= {curr_b}
+                    circuits[idx].add(curr_b)
                     if is_solved():
                         return curr_a.x * curr_b.x
         elif curr_b_in_circuit:
-            for idx in range(len(circuits)):
+            for idx in range(n_circuits):
                 if curr_b in circuits[idx]:
-                    circuits[idx] |= {curr_a}
+                    circuits[idx].add(curr_a)
                     if is_solved():
                         return curr_a.x * curr_b.x
-
-        if not (any(curr_a in x for x in circuits) or any(curr_b in x for x in circuits)):
+        else:
             circuits.append({curr_a, curr_b})
-            continue
 
 
 assert solve_1(test_inp, 10) == 40
